@@ -18,7 +18,7 @@ describe("test BowlingGame", () => {
     expect(b.score().score).toBe(0)
   })
 
-  test("checks for too many balls thrown", () => {
+  test("verify error for too many balls thrown", () => {
     const rolls = [
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
       10,
@@ -28,29 +28,27 @@ describe("test BowlingGame", () => {
     }).toThrow("Too many rolls, maximum of 21 balls allowed.")
   })
 
-  test("checks for too too many pins on a single roll", () => {
+  test("verify error for too many pins on a single roll", () => {
     const rolls = [1, 2, 9, 10, 11]
     expect(() => {
       new BowlingGame(rolls)
     }).toThrow("Invalid pin count provided")
   })
 
-  test("checks for full game given (21 balls)", () => {
-    const rolls = [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    ]
+  test("verify scoring for full game (21 balls, 190)", () => {
+    const rolls = [1, 2, 3, 4, 5, 5, 6, 4, 7, 3, 8, 2, 9, 1, 10, 10, 10, 10, 10]
     let b = new BowlingGame(rolls)
-    expect(b.score().score).toBe(165)
-    expect(b.score().message).toBe("21 balls thrown so far.")
+    expect(b.score().score).toBe(190)
+    expect(b.score().message).toBe("19 balls thrown.")
   })
 
-  test("checks score for 3 balls", () => {
+  test("verify correct score for 3 balls (3)", () => {
     let b = new BowlingGame([1, 1, 1])
     expect(b.score().score).toBe(3)
-    expect(b.score().message).toBe("3 balls thrown so far.")
+    expect(b.score().message).toBe("3 balls thrown.")
   })
 
-  test("zero game score of 0", () => {
+  test("verify correct score of all zeros (0)", () => {
     let b = new BowlingGame([])
     b.rollMany(20, 0)
     expect(b.score().score).toBe(0)
@@ -59,16 +57,22 @@ describe("test BowlingGame", () => {
     ])
   })
 
-  test("all 1s game - score of 20", () => {
+  test("verify score in all 1s game - score of 20", () => {
     let b = new BowlingGame([])
     b.rollMany(20, 1)
     expect(b.score().score).toBe(20)
   })
 
-  test("all 9s game - score of 180", () => {
-    let b = new BowlingGame([])
-    b.rollMany(20, 9)
-    expect(b.score().score).toBe(180)
-    expect(b.score().message).toBe("20 balls thrown so far.")
+  test("verify score in all 9s game - score of 90", () => {
+    const rolls = [9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0]
+    let b = new BowlingGame(rolls)
+
+    expect(b.score().score).toBe(90)
+    expect(b.score().message).toBe("20 balls thrown.")
+  })
+  test("throw one spare - score 12", () => {
+    let b = new BowlingGame([5, 5, 1])
+    b.rollMany(17, 0)
+    expect(b.score().score).toBe(12)
   })
 })
